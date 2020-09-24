@@ -1,0 +1,7 @@
+{
+    "mySystemServiceAPI": {
+        "register": "http://localhost:5001/api/register",
+        "user": "http://localhost:5001/api/user",
+        "dashboard": "http://localhost:5001/api/dashboard"
+    }
+}

@@ -1,0 +1,4 @@
+{
+    "mongoURI": "mongodb+srv://itsmetheintegrator:mYwruv-xatmox-2kimze@theintegrator.vqoda.mongodb.net/<dbname>?retryWrites=true&w=majority",
+    "jwtSecret": "Th1sIsS3cr3t"
+}

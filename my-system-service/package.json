@@ -1,0 +1,19 @@
+{
+  "name": "mysystemservice",
+  "version": "1.0.0",
+  "description": "My System Service",
+  "scripts": {
+    "test": "jest --coverage"
+  },
+  "keywords": [
+    "node",
+    "npm"
+  ],
+  "author": "Renel Castro",
+  "license": "ISC",
+  "devDependencies": {
+    "axios": "^0.20.0",
+    "jest": "^26.4.2",
+    "webpack": "^4.44.2"
+  }
+}
