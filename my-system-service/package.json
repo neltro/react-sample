@@ -1,5 +1,5 @@
 {
-  "name": "mysystemservice",
+  "name": "my-system-service",
   "version": "1.0.0",
   "description": "My System Service",
   "main": "dist/index.js",
