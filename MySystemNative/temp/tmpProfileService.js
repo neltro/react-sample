@@ -3,8 +3,6 @@ const axios = require('axios');
 
 const profileService = async (user) => {
     const { name, email, oldEmail } = user;
-    console.log('profileService');
-    console.log(user);
     try{
         const res = await axios.post(config.mySystemServiceAPI.profile, {
                 'name': name,
@@ -13,7 +11,6 @@ const profileService = async (user) => {
         });
         return res.data;
     } catch (err){
-        console.log(err.response.data.errors);
         return {
             success: false,
             msgs: err.response.data.errors || err 

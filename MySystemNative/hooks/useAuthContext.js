@@ -4,8 +4,6 @@ import { AuthContext } from '../context/auth-context';
 const useAuthContext = () => {
     const [state, setState] = useContext(AuthContext);
     function setAuthUser(user){
-        console.log('inside autcontext');
-        console.log(user);
         setState({...state, 
                   authUser: { 
                       email: user.email, 

@@ -42,8 +42,6 @@ module.exports.profileService = async (user) => {
         const result = await updateUser(user);
         return result;
     } catch (err){
-        console.log('err in profileService');
-        console.log(err);
         return {
             success: false,
             msg: err // s"Server Error"
@@ -53,8 +51,6 @@ module.exports.profileService = async (user) => {
 
 module.exports.getProfile = async (user) => {
     try{
-        console.log('inside getProfile async');
-        console.log(user); 
         const result = await getUser(user);
         return result;
     } catch (err){

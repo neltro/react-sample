@@ -10,7 +10,6 @@ module.exports.userService = async (user) => {
         });
         return res.data;
     } catch (err){
-        console.log(err.response);
         return {
             success: false,
             msg: err.response.data.errors || err 

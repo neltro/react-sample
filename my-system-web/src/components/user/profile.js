@@ -57,8 +57,6 @@ export default function Profile (props) {
             oldEmail: authContext.authUser.email
         }
         const result = await updateProfile(user);
-        console.log('updateUser');
-        console.log(result);
         if (!result.success){
             showErrors(result.msgs);
         } else {

@@ -48,23 +48,17 @@ const RegisterScreen = (props) => {
   const gotoLogin = () => {
     setState({gotoLoginText: 'Redirect to login in 3 seconds...'});
     setTimeout(() => {
-      navigation.navigate('Login');
+      props.navigation.navigate('Login');
     },3000);
   }
 
   const registerPressed = async () =>{
-    console.log(state.name);
-    console.log(state.email);
-    console.log(state.password);
-
     const result = await registerService({
       name: state.name,
       email: state.email,
       password: state.password
     });
 
-    console.log(result);
-    console.log(result.success);
     if (result.success)
     {
       //navigation.navigate('Login');
@@ -73,7 +67,6 @@ const RegisterScreen = (props) => {
       setState({errMsgName: ''});
       setState({errMsgEmail: ''});
       setState({errMsgPassword: ''});
-      console.log(result);
       result.msgs.map(err => {
         if (err.param === 'name'){
           setState({errMsgName: 'Name is required.'});

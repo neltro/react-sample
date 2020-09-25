@@ -61,8 +61,6 @@ export default function Login() {
             password: state.password
         }
         const result = await login(user);
-        console.log('result after login');
-        console.log(result);
         if (!result.success){
             showErrors(result.msg);
         } else {

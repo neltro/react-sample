@@ -11,7 +11,6 @@ module.exports.registerService = async (user) => {
         });
         return res.data;
     } catch (err){
-        console.log(err.response.data.errors);
         return {
             success: false,
             msgs: err.response.data.errors || err 

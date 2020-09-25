@@ -23,11 +23,6 @@ const ProfileScreen = (props) => {
     }
   )
 
-  console.log(authContext.authUser?.name ?? '')
-  console.log(authContext.authUser?.email ?? '')
-
-  
-
   const handleNameChange = (value) => {
     setState({name: value});
     if (state.name !== ''){
@@ -45,17 +40,12 @@ const ProfileScreen = (props) => {
   }
 
   const profilePressed = async () =>{
-    console.log(state.name);
-    console.log(state.email);
-
     const result = await profileService({
       name: state.name,
       oldEmail: authContext.authUser.email,
       email: state.email
     });
 
-    console.log(result);
-    console.log(result.success);
     if (result.success)
     {
       authContext.setAuthUser({ 
@@ -64,8 +54,6 @@ const ProfileScreen = (props) => {
         token: authContext.authUser.token
       });
       setState({profileSavedText: 'Updated successfully.'});
-      //navigation.navigate('Login');
-      //gotoLogin();
       setTimeout(() => {
         setState({profileSavedText: ''});
       },3000);
