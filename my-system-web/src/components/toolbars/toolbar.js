@@ -1,24 +1,39 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
+import MasterLabels from '../../config/constants';
+import useAuthContext from '../../hooks/useAuthContext';
+import Login from '../user/login';
+import Items from '../toolbars/items';
 
 export default function Toolbar () {
-    return (
-        <>
-        <nav className='navbar navbar-expand-lg navbar-light fixed-top'>
-                <div className='container'>
-                    <Link className='navbar-brand' to={'/'}>My System</Link>
-                    <div className='collapse navbar-collapse' id='navbarTogglerDemo02'>
-                        <ul className='navbar-nav ml-auto'>
-                            <li className='nav-item'>
-                                <Link className='nav-link' to={'/login'}>Login</Link>
-                            </li>
-                            <li className='nav-item'>
-                                <Link className='nav-link' to={'/register'}>Register</Link>
-                            </li>
-                        </ul>
-                    </div>
-                </div>
-            </nav>
-        </>
-    )
+    const authContext = useAuthContext();
+    const logout = () => {
+        authContext.setAuthUser({});
+        return (
+            <>
+                <Toolbar />
+                <Login />
+            </>
+        )
+    };
+
+    if (authContext?.authUser?.token ?? null){
+        return (
+            <Items
+                firstLink = '/profile'
+                firstText = {MasterLabels.labels.profile}
+                secondLink = '/'
+                secondText = {MasterLabels.labels.logout}
+                onClick = {logout}
+            />
+        )
+    } else {
+        return(
+            <Items
+                firstLink = '/login'
+                firstText = {MasterLabels.labels.login}
+                secondLink = '/register'
+                secondText = {MasterLabels.labels.register}
+            />
+        )
+    }
 }

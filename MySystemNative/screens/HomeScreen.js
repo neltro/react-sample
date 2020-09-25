@@ -3,7 +3,7 @@ import DashboardScreen from './DashboardScreen';
 
 const HomeScreen = () => {
   return (
-    <DashboardScreen />
+    <Dashboard />
   );
 };
 

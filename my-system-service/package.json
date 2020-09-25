@@ -2,8 +2,10 @@
   "name": "mysystemservice",
   "version": "1.0.0",
   "description": "My System Service",
+  "main": "dist/index.js",
   "scripts": {
-    "test": "jest --coverage"
+    "test": "jest --coverage",
+    "build": "webpack --mode production"
   },
   "keywords": [
     "node",
@@ -12,8 +14,11 @@
   "author": "Renel Castro",
   "license": "ISC",
   "devDependencies": {
+    "@babel/core": "^7.11.6",
     "axios": "^0.20.0",
+    "babel-loader": "^8.1.0",
     "jest": "^26.4.2",
-    "webpack": "^4.44.2"
+    "webpack": "^4.44.2",
+    "webpack-cli": "^3.3.12"
   }
 }

@@ -35,7 +35,8 @@ router.post('/',
                     }
                     res.send({
                         success: true,
-                        token: token
+                        token: token,
+                        name: result.name
                     });
                 });
             }

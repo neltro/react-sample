@@ -5,26 +5,29 @@ import DashboardScreen from './screens/DashboardScreen';
 import LoginScreen from './screens/LoginScreen';
 import RegisterScreen from './screens/RegisterScreen';
 import HomeButton from './components/HomeButton';
-import LoginText from './components/LoginText';
+import ProfileScreen from './screens/ProfileScreen';
+import { AuthContextProvider } from './context/auth-context';
 
 const RootStack = createStackNavigator();
 
 export default function App() {
   return (
-    <NavigationContainer>
-      <RootStack.Navigator>
-      <RootStack.Screen
-                name="Home"
-                component={DashboardScreen}
-                options={{
-                  headerTitle: () => <HomeButton />,
-                  headerRight: () => <LoginText />
-                }}
-              />
-        <RootStack.Screen name="Login" component={LoginScreen} />
-        <RootStack.Screen name="Dashboard" component={DashboardScreen} />
-        <RootStack.Screen name="Register" component={RegisterScreen} />
-      </RootStack.Navigator>
-    </NavigationContainer>
+    <AuthContextProvider>
+      <NavigationContainer>
+        <RootStack.Navigator>
+        <RootStack.Screen
+                  name="Home"
+                  component={DashboardScreen}
+                  options={{
+                    headerTitle: () => <HomeButton />
+                  }}
+                />
+          <RootStack.Screen name="Login" component={LoginScreen} />
+          <RootStack.Screen name="Dashboard" component={DashboardScreen} />
+          <RootStack.Screen name="Register" component={RegisterScreen} />
+          <RootStack.Screen name="Profile" component={ProfileScreen} />
+        </RootStack.Navigator>
+      </NavigationContainer>
+    </AuthContextProvider>
   );
 }

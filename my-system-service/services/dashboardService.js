@@ -1,7 +1,7 @@
 const config = require('../config/default.json');
 const axios = require('axios');
 
-module.exports.dashboardService = (token) => {
+const dashboardService = (token) => {
     try{
         const res = axios.get(config.mySystemServiceAPI.dashboard, {
                 headers: {
@@ -16,3 +16,4 @@ module.exports.dashboardService = (token) => {
         }
     }
 }
+export default dashboardService;

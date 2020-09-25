@@ -13,7 +13,9 @@ const MasterLabels = {
         email: 'Email Address',
         password: 'Password',
         register: 'Register',
+        profile: 'Profile',
         login: 'Login',
+        logout: 'Logout',
         submit: 'Submit',
         alreadyRegistered: 'Already registered'
     }

@@ -2,6 +2,8 @@
     "mySystemServiceAPI": {
         "register": "http://localhost:5001/api/register",
         "user": "http://localhost:5001/api/user",
-        "dashboard": "http://localhost:5001/api/dashboard"
+        "dashboard": "http://localhost:5001/api/dashboard",
+        "profile": "http://localhost:5001/api/profile",
+        "getProfile": "http://localhost:5001/api/getprofile"
     }
 }

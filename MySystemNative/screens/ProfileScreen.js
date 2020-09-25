@@ -1,4 +1,4 @@
-import React, { useReducer} from 'react';
+import React, { useEffect, useReducer} from 'react';
 import {
   TouchableOpacity,
   Text,
@@ -6,28 +6,33 @@ import {
   TextInput
 } from 'react-native';
 import styles from '../styles/registerStyle';
-import registerService from '../temp/tmpRegisterService'; 
+import { profileService } from '../temp/tmpProfileService'; 
 import useAuthContext from '../hooks/useAuthContext';
 
-const RegisterScreen = (props) => {
+const ProfileScreen = (props) => {
   const authContext = useAuthContext();
   const [state, setState] = useReducer(
     (state, newState) => ({...state, ...newState}),
     {
-        name: '',
-        email: '',
-        password: '',
+        name: authContext.authUser?.name ?? '',
+        email: authContext.authUser?.email ?? '',
         errMsgName: '',
         errMsgEmail: '',
-        errMsgPassword: '',
+        profileSavedText: '',
         gotoLoginText: ''
     }
   )
+
+  console.log(authContext.authUser?.name ?? '')
+  console.log(authContext.authUser?.email ?? '')
+
+  
 
   const handleNameChange = (value) => {
     setState({name: value});
     if (state.name !== ''){
         setState({errMsgName: ''});
+        setState({profileSavedText: ''});
     };
   }
 
@@ -35,52 +40,44 @@ const RegisterScreen = (props) => {
       setState({email: value});
       if (state.email !== ''){
           setState({errMsgEmail: ''});
+          setState({profileSavedText: ''});
       }
   }
 
-  const handlePasswordChange = (value) => {
-      setState({password: value});
-      if (state.password !== ''){
-          setState({errMsgPassword: ''});
-      }
-  }
-
-  const gotoLogin = () => {
-    setState({gotoLoginText: 'Redirect to login in 3 seconds...'});
-    setTimeout(() => {
-      navigation.navigate('Login');
-    },3000);
-  }
-
-  const registerPressed = async () =>{
+  const profilePressed = async () =>{
     console.log(state.name);
     console.log(state.email);
-    console.log(state.password);
 
-    const result = await registerService({
+    const result = await profileService({
       name: state.name,
-      email: state.email,
-      password: state.password
+      oldEmail: authContext.authUser.email,
+      email: state.email
     });
 
     console.log(result);
     console.log(result.success);
     if (result.success)
     {
+      authContext.setAuthUser({ 
+        email: state.email, 
+        name: state.name, 
+        token: authContext.authUser.token
+      });
+      setState({profileSavedText: 'Updated successfully.'});
       //navigation.navigate('Login');
-      gotoLogin();
+      //gotoLogin();
+      setTimeout(() => {
+        setState({profileSavedText: ''});
+      },3000);
     } else {
       setState({errMsgName: ''});
       setState({errMsgEmail: ''});
-      setState({errMsgPassword: ''});
-      console.log(result);
+      setState({profileSavedText: ''});
       result.msgs.map(err => {
         if (err.param === 'name'){
           setState({errMsgName: 'Name is required.'});
         } else if (err.param == 'email'){
           setState({errMsgEmail: 'Please include valid email.'});
-        } else if (err.param == 'password'){
-          setState({errMsgPassword: 'Please enter password at least 6 or more characters.'});
         }
       });
     }
@@ -92,6 +89,7 @@ const RegisterScreen = (props) => {
             style={styles.inputText}
             placeholder="Name" 
             placeholderTextColor="#003f5c"
+            value={state.name}
             onChangeText={nameValue => handleNameChange(nameValue)}/>
         </View>
         <View>
@@ -102,23 +100,16 @@ const RegisterScreen = (props) => {
             style={styles.inputText}
             placeholder="Email" 
             placeholderTextColor="#003f5c"
+            value={state.email}
             onChangeText={emailValue => handleEmailChange(emailValue)}/>
         </View>
         <View style={styles.errMessage}>
           <Text style={styles.errMessage}>{state.errMsgEmail}</Text>
         </View>
-        <View style={styles.inputView} >
-          <TextInput  
-            secureTextEntry
-            style={styles.inputText}
-            placeholder="Password" 
-            placeholderTextColor="#003f5c"
-            onChangeText={passwordValue => handlePasswordChange(passwordValue)}/>
+        <View style={styles.profileSaved}>
+          <Text style={styles.profileSaved}>{state.profileSavedText}</Text>
         </View>
-        <View>
-          <Text style={styles.errMessage}>{state.errMsgPassword}</Text>
-        </View>
-        <TouchableOpacity style={styles.button} onPress={registerPressed}>
+        <TouchableOpacity style={styles.button} onPress={profilePressed}>
           <Text style={styles.buttonText}>Submit</Text>
         </TouchableOpacity>
         <TouchableOpacity>
@@ -128,4 +119,4 @@ const RegisterScreen = (props) => {
   );
 };
 
-export default RegisterScreen;
+export default ProfileScreen;

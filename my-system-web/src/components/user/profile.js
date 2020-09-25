@@ -1,65 +1,73 @@
-import React, { useReducer } from 'react';
-import { create } from '../../services/registerService';
+import React, { useEffect, useReducer } from 'react';
+import { updateProfile } from '../../services/profileService';
 import MasterLabels from '../../config/constants';
 import InputBox from '../ui/inputbox';
 import Button from '../ui/button';
-import { Link } from 'react-router-dom';
+import { useHistory, useLocation } from 'react-router-dom';
+import useAuthContext from '../../hooks/useAuthContext';
 
-export default function Register () {
+export default function Profile (props) {
+    const authContext = useAuthContext();
     const [state, setState] = useReducer(
         (state, newState) => ({...state, ...newState}),
         {
-            name: '',
-            email: '',
-            password: '',
+            name: authContext.authUser?.name ?? '',
+            email: authContext.authUser?.email ?? '',
             errMsgName: '',
             errMsgEmail: '',
-            errMsgPassword: '',
             errMsgNameClassName: 'd-none', 
             errMsgEmailClassName: 'd-none',
-            errMsgPasswordClassName: 'd-none'
+            msgUpdatedClassName: 'd-none'
         }
     )
 
-    function handleNameChange(e){
+    let history = useHistory();
+    let location = useLocation();
+    let { from } = location.state || { from: { pathname: "/login" } };
+    if (!authContext?.authUser?.token ?? null){
+        history.replace(from);
+    }
+
+    useEffect(() => {
+        setState({msgUpdatedClassName: 'd-none'});
+    },[])
+
+    const handleNameChange = (e) => {
         setState({name: e.target.value});
         if (state.name !== ''){
             setState({errMsgName: ''});
             setState({errMsgNameClassName: 'd-none'});
+            setState({msgUpdatedClassName: 'd-none'});
         }
     }
 
-    function handleEmailChange(e){
+    const handleEmailChange = (e) => {
         setState({email: e.target.value});
         if (state.email !== ''){
             setState({errMsgEmail: ''});
             setState({errMsgEmailClassName: 'd-none'});
+            setState({msgUpdatedClassName: 'd-none'});
         }
     }
 
-    function handlePasswordChange(e){
-        setState({password: e.target.value});
-        if (state.password !== ''){
-            setState({errMsgPassword: ''});
-            setState({errMsgPasswordClassName: 'd-none'});
-        }
-    }
-
-    const registerUser = async () => {
+    const updateUser = async () => {
         const user = {
             name: state.name,
             email: state.email,
-            password: state.password
+            oldEmail: authContext.authUser.email
         }
-        const result = await create(user);
+        const result = await updateProfile(user);
+        console.log('updateUser');
+        console.log(result);
         if (!result.success){
-            showErrors(result.msg);
+            showErrors(result.msgs);
         } else {
-            window.location.href = '/login';
+            setState({msgUpdatedClassName: 'success-message'});
         }
+
     }
 
-    function showErrors(msgs){
+    const showErrors = (msgs) => {
         msgs.forEach(msg => {
             if (msg.param === 'email'){
                 setState({errMsgEmail: msg.msg});
@@ -68,10 +76,6 @@ export default function Register () {
             else if (msg.param === 'name'){
                 setState({errMsgName: msg.msg});
                 setState({errMsgNameClassName: 'error-label'});
-            }
-            else if (msg.param === 'password'){
-                setState({errMsgPassword: msg.msg});
-                setState({errMsgPasswordClassName: 'error-label'});
             } else {
                 setState({errMsgEmail: msg.msg});
                 setState({errMsgEmailClassName: 'error-label'});
@@ -81,7 +85,7 @@ export default function Register () {
 
     return (
         <form>
-            <h3>{MasterLabels.labels.register}</h3>
+            <h3>{MasterLabels.labels.profile}</h3>
 
             <InputBox 
                 outterClassName = 'form-group'
@@ -107,28 +111,17 @@ export default function Register () {
                 errorMessage = {state.errMsgEmail}
             />
 
-            <InputBox 
-                outterClassName = 'form-group'
-                innerClassName = 'form-control'
-                label = { MasterLabels.labels.password }
-                type = 'password'
-                placeholder = { MasterLabels.input.placeholder.password }
-                value = {state.password}
-                onChange = {handlePasswordChange}
-                errorClassName = {state.errMsgPasswordClassName}
-                errorMessage = {state.errMsgPassword}
-            />
+            <div className = 'form-group'>
+                <span className={state.msgUpdatedClassName}>Successfully updated.</span>
+            </div>
 
             <Button 
                 id = 'btnRegister'
                 className = 'btn btn-primary btn-block'
                 buttonName = { MasterLabels.labels.submit }
-                onClick = { registerUser }
+                onClick = { updateUser }
             />
 
-            <p className='already-registered text-right'>
-                Already registered? Please <Link to='/login'>login</Link>
-            </p>
         </form>
     );
 }

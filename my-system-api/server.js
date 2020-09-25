@@ -19,6 +19,7 @@ app.use(cors());
 app.use('/api/register', require('./routes/api/register'));
 app.use('/api/user', require('./routes/api/user'));
 app.use('/api/dashboard', require('./routes/api/dashboard'));
+app.use('/api/profile', require('./routes/api/profile'));
 
 app.get('/', (req, res) => {
     res.send('root');

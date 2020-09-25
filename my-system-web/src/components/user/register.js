@@ -1,29 +1,35 @@
 import React, { useReducer } from 'react';
-import InputBox from '../ui/inputbox';    
-import Button from '../ui/button';         
-import MasterLabels from '../../config/constants'; 
-import { login } from '../../services/userService';
-import { Link, useHistory, useLocation } from 'react-router-dom';
-import useAuthContext from '../../hooks/useAuthContext';
+import MasterLabels from '../../config/constants';
+import InputBox from '../ui/inputbox';
+import Button from '../ui/button';
+import { Link } from 'react-router-dom';
+import { create } from '../../services/registerService';
 
-export default function Login() {
-    const authContext = useAuthContext();
+export default function Register () {
     const [state, setState] = useReducer(
         (state, newState) => ({...state, ...newState}),
         {
+            name: '',
             email: '',
             password: '',
+            errMsgName: '',
             errMsgEmail: '',
             errMsgPassword: '',
+            errMsgNameClassName: 'd-none', 
             errMsgEmailClassName: 'd-none',
             errMsgPasswordClassName: 'd-none'
         }
     )
-    let history = useHistory();
-    let location = useLocation();
-    let { from } = location.state || { from: { pathname: "/" } };
 
-    const handleEmailChange = (e) => {
+    function handleNameChange(e){
+        setState({name: e.target.value});
+        if (state.name !== ''){
+            setState({errMsgName: ''});
+            setState({errMsgNameClassName: 'd-none'});
+        }
+    }
+
+    function handleEmailChange(e){
         setState({email: e.target.value});
         if (state.email !== ''){
             setState({errMsgEmail: ''});
@@ -31,7 +37,7 @@ export default function Login() {
         }
     }
 
-    const handlePasswordChange = (e) => {
+    function handlePasswordChange(e){
         setState({password: e.target.value});
         if (state.password !== ''){
             setState({errMsgPassword: ''});
@@ -39,12 +45,30 @@ export default function Login() {
         }
     }
 
-    const showErrors = (msgs) => {
+    const registerUser = async () => {
+        const user = {
+            name: state.name,
+            email: state.email,
+            password: state.password
+        }
+        const result = await create(user);
+        if (!result.success){
+            showErrors(result.msgs);
+        } else {
+            window.location.href = '/login';
+        }
+    }
+
+    function showErrors(msgs){
         msgs.forEach(msg => {
             if (msg.param === 'email'){
                 setState({errMsgEmail: msg.msg});
                 setState({errMsgEmailClassName: 'error-label'});
             } 
+            else if (msg.param === 'name'){
+                setState({errMsgName: msg.msg});
+                setState({errMsgNameClassName: 'error-label'});
+            }
             else if (msg.param === 'password'){
                 setState({errMsgPassword: msg.msg});
                 setState({errMsgPasswordClassName: 'error-label'});
@@ -55,29 +79,22 @@ export default function Login() {
         });
     }
 
-    const loginClicked = async () => { 
-        const user = {
-            email: state.email,
-            password: state.password
-        }
-        const result = await login(user);
-        console.log('result after login');
-        console.log(result);
-        if (!result.success){
-            showErrors(result.msg);
-        } else {
-            authContext.setAuthUser({ 
-                email: user.email, 
-                name: result.name, 
-                token: result.token
-            });
-            history.replace(from);
-        }
-    } 
-
     return (
         <form>
-            <h3>{MasterLabels.labels.login}</h3>
+            <h3>{MasterLabels.labels.register}</h3>
+
+            <InputBox 
+                outterClassName = 'form-group'
+                innerClassName = 'form-control'
+                label = {MasterLabels.labels.name}
+                type = 'text'
+                placeholder = {MasterLabels.input.placeholder.name}
+                value = {state.name}
+                onChange = {handleNameChange}
+                errorClassName = {state.errMsgNameClassName}
+                errorMessage = {state.errMsgName}
+            />
+
             <InputBox 
                 outterClassName = 'form-group'
                 innerClassName = 'form-control'
@@ -93,9 +110,9 @@ export default function Login() {
             <InputBox 
                 outterClassName = 'form-group'
                 innerClassName = 'form-control'
-                label = {MasterLabels.labels.password}
+                label = { MasterLabels.labels.password }
                 type = 'password'
-                placeholder = {MasterLabels.input.placeholder.password}
+                placeholder = { MasterLabels.input.placeholder.password }
                 value = {state.password}
                 onChange = {handlePasswordChange}
                 errorClassName = {state.errMsgPasswordClassName}
@@ -103,14 +120,14 @@ export default function Login() {
             />
 
             <Button 
-                id = 'btnLogin'
+                id = 'btnRegister'
                 className = 'btn btn-primary btn-block'
-                buttonName = {MasterLabels.labels.submit}
-                onClick = {loginClicked}
+                buttonName = { MasterLabels.labels.submit }
+                onClick = { registerUser }
             />
 
             <p className='already-registered text-right'>
-                Do you want to <Link to='/register'>Register?</Link>
+                Already registered? Please <Link to='/login'>login</Link>
             </p>
         </form>
     );
